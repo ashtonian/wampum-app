@@ -1,46 +1,67 @@
 angular.module('wampum.routes', [])
 
-  .config(function ($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider) {
 
-    $stateProvider
+  $stateProvider
 
-      .state('tabs', {
-        abstract: true,
-        templateUrl: 'templates/tabsController.html'
-      })
-
-      .state('tabs.home', {
-        url: '/home',
-        views: {
-          'home': {
-            templateUrl: 'templates/home.html',
-            controller: 'homeController'
-          }
+    .state('login', {
+      url: '/login',
+      views: {
+        'login': {
+          templateUrl: 'templates/login.html',
+          controller: 'loginController'
         }
-      })
-
-      .state('tabs.browse', {
-        url: '/browse',
-        views: {
-          'browse': {
-            templateUrl: 'templates/browse.html',
-            controller: 'browseController'
-          }
+      }
+    })
+    .state('signup', {
+      url: '/signup',
+      views: {
+        'signup': {
+          templateUrl: 'templates/signup.html',
+          controller: 'signupController'
         }
-      })
+      }
+    })
+    .state('browse', {
+      abstract: true,
+      url: '/browse'
+    })
+    .state('browse.list', {
+      url: '',
+      templateUrl: 'templates/browse.list.html',
+    //  controller: 'itemListController'
+    })
+    .state('browse.details', {
+      url: '/details/:id',
+      templateUrl: 'templates/browse.detail.html',
+    //  controller: 'itemDetailController'
+    })
 
-      .state('tabs.chat', {
-        url: '/chat',
-        views: {
-          'chat': {
-            templateUrl: 'templates/chat.html',
-            controller: 'chatController'
-          }
-        }
-      })
-    ;
 
-    // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/home');
+  // browseController
+  // browseList
+  // browseDetail
 
+  // myItems
+  // myItemsList
+  // myItemsDetail
+  // myItemsNew
+
+  // chat
+  // chatList
+  // chatDetail
+
+  .state('settings', {
+    url: '/settings',
+    views: {
+      'settings': {
+        templateUrl: 'templates/settings.html',
+        controller: 'settingsController'
+      }
+    }
   });
+
+  // if none of the above states are matched, use this as the fallback
+  $urlRouterProvider.otherwise('/');
+
+});
