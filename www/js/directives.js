@@ -1,16 +1,6 @@
-angular.module('wampum.directives', [])
+angular.module('app.directives', [])
 
-  .directive('noScroll', function ($document) {
+.directive('blankDirective', [function(){
 
-    return {
-      restrict: 'A',
-      link: function ($scope, $element, $attr) {
-
-        $document.on('touchmove', function (e) {
-          e.preventDefault();
-        });
-      }
-    }
-  })
-;
+}]);
 
