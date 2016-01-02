@@ -100,4 +100,12 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
   };
 
 })
-;
+
+.controller('AddItemController', function($scope, Camera) {
+  $scope.getPhoto = function() {
+    Camera.getPicture().then(function(imageURI) {
+      console.log(imageURI);
+    }, function(err) {
+      console.err(err);
+    });
+  }});
