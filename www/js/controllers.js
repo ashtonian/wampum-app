@@ -43,15 +43,15 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
 .controller('cardsController', function($scope, TDCardDelegate, $timeout) {
 
   var cardTypes = [{
-    image: 'http://c4.staticflickr.com/4/3924/18886530069_840bc7d2a5_n.jpg'
+    image: 'http://www.canticlecreative.com/wampum/bmwRims.jpg'
   }, {
-    image: 'http://c1.staticflickr.com/1/421/19046467146_548ed09e19_n.jpg'
+    image: 'http://www.canticlecreative.com/wampum/guitairPedal.jpg'
   }, {
-    image: 'http://c1.staticflickr.com/1/278/18452005203_a3bd2d7938_n.jpg'
+    image: 'http://www.canticlecreative.com/wampum/radarDetector.jpg'
   }, {
-    image: 'http://c1.staticflickr.com/1/297/19072713565_be3113bc67_n.jpg'
+    image: 'http://www.canticlecreative.com/wampum/turntable.jpg'
   }, {
-    image: 'http://c1.staticflickr.com/1/536/19072713515_5961d52357_n.jpg'
+    image: 'http://www.canticlecreative.com/wampum/v60pourover.jpg'
   }, {
     image: 'http://c4.staticflickr.com/4/3937/19072713775_156a560e09_n.jpg'
   }, {
