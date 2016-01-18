@@ -1,7 +1,25 @@
 <ion-view view-title="Add Item">
-    <ion-pane ng-controller="AddItemController">
+  <ion-pane ng-controller="AddItemController">
     <h1>Add Item</h1>
-     afhajksznfklasflkafkljawkldjaklsjdkj
-     <button ng-click="addMedia()" class="button button-block button-primary">Photo BUTTON</button>
-   </ion-pane>
+
+    <button class="button button-block button-primary" ng-click="addMedia()">Photo BUTTON</button>
+
+    <ion-scroll direction="x" style="height:200px; min-height: 200px; overflow: scroll; white-space: nowrap;">
+      <img ng-repeat="image in images" ng-src="{{urlForImage(image)}}" style="height:200px; padding: 5px 5px 5px 5px;"/>
+    </ion-scroll>
+
+    <form ng-submit="add(barteritem)">
+      <label class="item item-input">
+        <input ng-model="barteritem.title" placeholder="title" type="text">
+      </label>
+      <label class="item item-input">
+        <input ng-model="barteritem.description" placeholder="description" type="text">
+      </label>
+
+      <div class="padding">
+        <button class="button button-block button-positive" type="submit">Create Item</button>
+      </div>
+    </form>
+
+  </ion-pane>
 </ion-view>

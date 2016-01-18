@@ -1,7 +1,5 @@
 angular.module('starter.routes', [])
 
-
-
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
