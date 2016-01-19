@@ -71,11 +71,14 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
 
   })
 
-.controller('AddItemController', function($scope, $cordovaDevice, $cordovaFile, $ionicPlatform, $cordovaEmailComposer, $ionicActionSheet, ImageService, FileService,BarterItemService) {
+.controller('AddItemController', function($scope, $cordovaDevice, $cordovaFile, $ionicPlatform, $cordovaEmailComposer, $ionicActionSheet, CameraService, ImageStoreService, BarterItemService) {
+
+  $scope.images = [];
+
   // TODO: once you get the images, you must display
   // TODO: add image urls
   $ionicPlatform.ready(function() {
-    $scope.images = FileService.images();
+    $scope.images = ImageStoreService.images();
     //  $scope.$apply(); // TODO: this throws a scope already in digest
   });
 
@@ -83,7 +86,6 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
     var trueOrigin = cordova.file.dataDirectory + imageName;
     return trueOrigin;
   };
-
 
   $scope.addMedia = function() {
     $scope.hideSheet = $ionicActionSheet.show({
@@ -102,8 +104,8 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
 
   $scope.addImage = function(type) {
     $scope.hideSheet();
-    ImageService.handleMediaDialog(type).then(function() {
-      $scope.images = FileService.images();
+    CameraService.handleMediaDialog(type).then(function() {
+      $scope.images = ImageStoreService.images();
     });
   };
 

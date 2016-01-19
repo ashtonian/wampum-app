@@ -53,13 +53,13 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('FileService', function() {
-  var images;
+.factory('ImageStoreService', function() {
+  var images = [];
   var IMAGE_STORAGE_KEY = 'images';
 
   function getImages() {
-    var img = window.localStorage.getItem(IMAGE_STORAGE_KEY);
-    if (img) {
+    var store = window.localStorage.getItem(IMAGE_STORAGE_KEY);
+    if (store) {
       images = JSON.parse(img);
     } else {
       images = [];
@@ -78,8 +78,12 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('ImageService', function($cordovaCamera, FileService, $q, $cordovaFile) {
+.factory('CameraService', function($cordovaCamera, ImageStoreService, $q, $cordovaFile) {
 
+  // TODO: move elsewhere/use guid from angular?
+  /*
+  used to generate a unique id for the file name in case of duplicates.
+  */
   function makeid() {
     var text = '';
     var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -90,42 +94,56 @@ angular.module('starter.services', [])
     return text;
   }
 
-  function optionsForType(type) {
-    var source;
-    switch (type) {
+  function getCameraSource(typeEnum) {
+    switch (typeEnum) {
       case 0:
-        source = Camera.PictureSourceType.CAMERA;
-        break;
+        return Camera.PictureSourceType.CAMERA;
       case 1:
-        source = Camera.PictureSourceType.PHOTOLIBRARY;
-        break;
+        return Camera.PictureSourceType.PHOTOLIBRARY;
     }
+  }
+
+  /*
+  This is used to get the camera options
+  */
+  function getCameraOptions(cameraSource, cameraPopoverOptions) {
     return {
+      quality: 100,
       destinationType: Camera.DestinationType.FILE_URI,
-      sourceType: source,
+      sourceType: cameraSource,
       allowEdit: false,
-      encodingType: Camera.EncodingType.JPEG,
+      encodingType: Camera.EncodingType.PNG,
+      //  targetWidth: 100,
+      // targetHeight: 100,
+      mediaType: Camera.EncodingType.PICTURE,
+      cameraDirection: Camera.EncodingType.BACK,
       // TODO:  popoverOptions: CameraPopoverOptions,
-      saveToPhotoAlbum: false
+      saveToPhotoAlbum: true,
+      correctOrientation: 1
     };
   }
 
   function saveMedia(type) {
     return $q(function(resolve, reject) {
-      var options = optionsForType(type);
+      var source = getCameraSource(type);
+      var options = getCameraOptions(source);
 
-      $cordovaCamera.getPicture(options).then(function(imageUrl) {
-        var name = imageUrl.substr(imageUrl.lastIndexOf('/') + 1);
-        var namePath = imageUrl.substr(0, imageUrl.lastIndexOf('/') + 1);
-        var newName = makeid() + name;
-        $cordovaFile.copyFile(namePath, name, cordova.file.dataDirectory, newName)
-          .then(function(info) {
-            FileService.storeImage(newName);
-            resolve();
-          }, function(e) {
-            reject();
+      $cordovaCamera.getPicture(options)
+        .then(
+          function(imageUrl) {
+            var name = imageUrl.substr(imageUrl.lastIndexOf('/') + 1);
+            var namePath = imageUrl.substr(0, imageUrl.lastIndexOf('/') + 1);
+            var newName = makeid() + name;
+            $cordovaFile.copyFile(namePath, name, cordova.file.dataDirectory, newName)
+              .then(
+                function(info) {
+                  ImageStoreService.storeImage(newName);
+                  resolve();
+                },
+                function(e) {
+                  reject();
+                });
           });
-      });
     });
   }
   return {

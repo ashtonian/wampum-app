@@ -5,7 +5,11 @@
     <button class="button button-block button-primary" ng-click="addMedia()">Photo BUTTON</button>
 
     <ion-scroll direction="x" style="height:200px; min-height: 200px; overflow: scroll; white-space: nowrap;">
-      <img ng-repeat="image in images" ng-src="{{urlForImage(image)}}" style="height:200px; padding: 5px 5px 5px 5px;"/>
+      <div ng-repeat="image in images">
+        <img ng-src="{{urlForImage(image)}}" style="height:200px; padding: 5px 5px 5px 5px;"/>
+        {{image}}
+        {{image.ToString}}
+      </div>
     </ion-scroll>
 
     <form ng-submit="add(barteritem)">
