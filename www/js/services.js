@@ -60,7 +60,7 @@ angular.module('starter.services', [])
   function getImages() {
     var store = window.localStorage.getItem(IMAGE_STORAGE_KEY);
     if (store) {
-      images = JSON.parse(img);
+      images = JSON.parse(store);
     } else {
       images = [];
     }
@@ -78,6 +78,9 @@ angular.module('starter.services', [])
   };
 })
 
+/* TODO: Thread Warning['File'] took '115' plugin should use a background thread.*/
+/*Snapshotting a view that has not been rendered results in an empty snapshot. Ensure your view has been rendered at least once before snapshotting or snapshot. after screen updates. */
+/**/
 .factory('CameraService', function($cordovaCamera, ImageStoreService, $q, $cordovaFile) {
 
   // TODO: move elsewhere/use guid from angular?

@@ -1,7 +1,7 @@
 {
   "name": "%5Bwampum%5D",
   "version": "1.1.1",
-  "description": "[Wampum]: An Ionic project",
+  "description": "Wampum: An Ionic project",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^2.0.4",
@@ -14,12 +14,11 @@
     "gulp-util": "^2.2.14",
     "shelljs": "^0.3.0"
   },
-  "cordovaPlugins": [],
+  "cordovaPlugins": [
+    "org.apache.cordova.camera"
+  ],
   "cordovaPlatforms": [
     "ios",
-    {
-      "platform": "android",
-      "locator": "browser"
-    }
+    "android"
   ]
 }
