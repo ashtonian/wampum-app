@@ -53,62 +53,8 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('ImageStoreService', function() {
-  var images = [];
-  var IMAGE_STORAGE_KEY = 'images';
+.factory('ImageService', function($q, $cordovaImagePicker, $cordovaCamera) {
 
-  function getImages() {
-    var store = window.localStorage.getItem(IMAGE_STORAGE_KEY);
-    if (store) {
-      images = JSON.parse(store);
-    } else {
-      images = [];
-    }
-    return images;
-  }
-
-  function addImage(img) {
-    images.push(img);
-    window.localStorage.setItem(IMAGE_STORAGE_KEY, JSON.stringify(images));
-  }
-
-  return {
-    storeImage: addImage,
-    images: getImages
-  };
-})
-
-/* TODO: Thread Warning['File'] took '115' plugin should use a background thread.*/
-/*Snapshotting a view that has not been rendered results in an empty snapshot. Ensure your view has been rendered at least once before snapshotting or snapshot. after screen updates. */
-/**/
-.factory('CameraService', function($cordovaCamera, ImageStoreService, $q, $cordovaFile) {
-
-  // TODO: move elsewhere/use guid from angular?
-  /*
-  used to generate a unique id for the file name in case of duplicates.
-  */
-  function makeid() {
-    var text = '';
-    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (var i = 0; i < 5; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-  }
-
-  function getCameraSource(typeEnum) {
-    switch (typeEnum) {
-      case 0:
-        return Camera.PictureSourceType.CAMERA;
-      case 1:
-        return Camera.PictureSourceType.PHOTOLIBRARY;
-    }
-  }
-
-  /*
-  This is used to get the camera options
-  */
   function getCameraOptions(cameraSource, cameraPopoverOptions) {
     return {
       quality: 100,
@@ -126,30 +72,34 @@ angular.module('starter.services', [])
     };
   }
 
-  function saveMedia(type) {
-    return $q(function(resolve, reject) {
-      var source = getCameraSource(type);
-      var options = getCameraOptions(source);
-
-      $cordovaCamera.getPicture(options)
-        .then(
-          function(imageUrl) {
-            var name = imageUrl.substr(imageUrl.lastIndexOf('/') + 1);
-            var namePath = imageUrl.substr(0, imageUrl.lastIndexOf('/') + 1);
-            var newName = makeid() + name;
-            $cordovaFile.copyFile(namePath, name, cordova.file.dataDirectory, newName)
-              .then(
-                function(info) {
-                  ImageStoreService.storeImage(newName);
-                  resolve();
-                },
-                function(e) {
-                  reject();
-                });
-          });
-    });
+  function getImagePickerOptions() {
+    return {
+      maximumImagesCount: 10,
+      width: 800,
+      height: 800,
+      quality: 100
+    };
   }
+
+  function getImageFromSource(source) {
+
+    if (source === 0 || source === 'camera') {
+      return $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.CAMERA)).then(function(results) {
+        return [results];
+      });
+    } else if (source === 1 || source === 'imagePicker') {
+      return $cordovaImagePicker.getPictures(getImagePickerOptions());
+    } else if (source === 2 || source === 'photoLibrary') {
+      return $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.PHOTOLIBRARY)).then(function(results) {
+        return [results];
+      });
+    }
+  }
+
   return {
-    handleMediaDialog: saveMedia
+    getImageFromSource: getImageFromSource
   };
-});
+
+})
+
+;

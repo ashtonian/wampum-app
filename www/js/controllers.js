@@ -71,21 +71,9 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
 
   })
 
-.controller('AddItemController', function($scope, $cordovaDevice, $cordovaFile, $ionicPlatform, $cordovaEmailComposer, $ionicActionSheet, CameraService, ImageStoreService, BarterItemService) {
+.controller('AddItemController', function($scope, $cordovaDevice, $cordovaFile, $ionicPlatform, $cordovaEmailComposer, $ionicActionSheet, ImageService, BarterItemService) {
 
   $scope.images = [];
-
-  // TODO: once you get the images, you must display
-  // TODO: add image urls
-  $ionicPlatform.ready(function() {
-    $scope.images = ImageStoreService.images();
-    //  $scope.$apply(); // TODO: this throws a scope already in digest
-  });
-
-  $scope.urlForImage = function(imageName) {
-    var trueOrigin = cordova.file.dataDirectory + imageName;
-    return trueOrigin;
-  };
 
   $scope.addMedia = function() {
     $scope.hideSheet = $ionicActionSheet.show({
@@ -104,8 +92,14 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
 
   $scope.addImage = function(type) {
     $scope.hideSheet();
-    CameraService.handleMediaDialog(type).then(function() {
-      $scope.images = ImageStoreService.images();
+    ImageService.getImageFromSource(type).then(function(imgUrls) {
+      $scope.images.push.apply($scope.images,imgUrls);
+    });
+  };
+
+  $scope.removeImage = function(imgUrl) {
+    $scope.images = $scope.images.filter(function(el) {
+      return el !== imgUrl;
     });
   };
 

@@ -2,11 +2,13 @@
   <ion-pane ng-controller="AddItemController">
     <h1>Add Item</h1>
 
-    <button class="button button-block button-primary" ng-click="addMedia()">Photo BUTTON</button>
+    <button class="button button-block button-primary" ng-click="addMedia()">Add Photo</button>
 
-    <ion-scroll direction="x" style="height:200px; min-height: 200px; overflow: scroll; white-space: nowrap;">
+    <ion-scroll direction="x" style="height:400px; min-height: 200px; overflow: scroll; white-space: nowrap;">
       <div ng-repeat="image in images">
-        <img ng-src="{{urlForImage(image)}}" style="height:200px; padding: 5px 5px 5px 5px;"/>
+         <a class="item" ng-click="removeImage('{{image}}')" >
+        <img ng-src="{{image}}" style="height:200px; padding: 5px 5px 5px 5px;"/>
+      </a>
       </div>
     </ion-scroll>
 
