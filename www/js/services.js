@@ -62,8 +62,8 @@ angular.module('starter.services', [])
       sourceType: cameraSource,
       allowEdit: false,
       encodingType: Camera.EncodingType.PNG,
-      //  targetWidth: 100,
-      // targetHeight: 100,
+      // TODO: targetWidth: 100,
+      // TODO: targetHeight: 100,
       mediaType: Camera.EncodingType.PICTURE,
       cameraDirection: Camera.EncodingType.BACK,
       // TODO:  popoverOptions: CameraPopoverOptions,
@@ -84,14 +84,20 @@ angular.module('starter.services', [])
   function getImageFromSource(source) {
 
     if (source === 0 || source === 'camera') {
-      return $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.CAMERA)).then(function(results) {
-        return [results];
+      // TODO: not sure if this is the proper way to do this or if I should just return [results]
+      return $q(function(resolve) {
+        $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.CAMERA)).then(function(results) {
+          resolve([results]);
+        });
       });
     } else if (source === 1 || source === 'imagePicker') {
       return $cordovaImagePicker.getPictures(getImagePickerOptions());
     } else if (source === 2 || source === 'photoLibrary') {
-      return $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.PHOTOLIBRARY)).then(function(results) {
-        return [results];
+      return $q(function(resolve) {
+        $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.PHOTOLIBRARY)).then(function(results) {
+          resolve([results]);
+        });
+
       });
     }
   }
