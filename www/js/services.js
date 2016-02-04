@@ -26,7 +26,7 @@ angular.module('starter.services', [])
   }];
 
   function Add(barteritem) {
-    items.add(barteritem);
+    items.push(barteritem);
   }
 
   function Remove(barteritem) {

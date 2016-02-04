@@ -1,23 +1,22 @@
 <ion-view view-title="Add Item">
   <ion-pane ng-controller="AddItemController">
     <h1>Add Item</h1>
+    <form  ng-submit="addItem(barterItemForm)">
 
-    <button class="button button-block button-primary" ng-click="addMedia()">Add Photo</button>
+      <button class="button button-block button-primary" ng-click="addMedia()">Add Photo</button>
+      <ion-scroll direction="x" style="height:400px; min-height: 200px; overflow: scroll; white-space: nowrap;">
+        <div ng-repeat="image in images">
+          <a class="item" ng-click="removeImage('{{image}}')">
+            <img ng-src="{{image}}" style="height:200px; padding: 5px 5px 5px 5px;"/>
+          </a>
+        </div>
+      </ion-scroll>
 
-    <ion-scroll direction="x" style="height:400px; min-height: 200px; overflow: scroll; white-space: nowrap;">
-      <div ng-repeat="image in images">
-         <a class="item" ng-click="removeImage('{{image}}')" >
-        <img ng-src="{{image}}" style="height:200px; padding: 5px 5px 5px 5px;"/>
-      </a>
-      </div>
-    </ion-scroll>
-
-    <form ng-submit="add(barteritem)">
       <label class="item item-input">
-        <input ng-model="barteritem.title" placeholder="title" type="text">
+        <input ng-model="barterItemForm.title" placeholder="title" type="text">
       </label>
       <label class="item item-input">
-        <input ng-model="barteritem.description" placeholder="description" type="text">
+        <input ng-model="barterItemForm.description" placeholder="description" type="text">
       </label>
 
       <div class="padding">

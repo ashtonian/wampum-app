@@ -70,6 +70,12 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
     };
 
   })
+  .controller('myItemController', function($scope, $timeout, BarterItemService) {
+
+    $scope.items = BarterItemService.Get();
+
+
+  })
 
 .controller('AddItemController', function($scope, $cordovaDevice, $cordovaFile, $ionicPlatform, $cordovaEmailComposer, $ionicActionSheet, ImageService, BarterItemService) {
 
@@ -93,7 +99,7 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
   $scope.addImage = function(type) {
     $scope.hideSheet();
     ImageService.getImageFromSource(type).then(function(imgUrls) {
-      $scope.images.push.apply($scope.images,imgUrls);
+      $scope.images.push.apply($scope.images, imgUrls);
     });
   };
 
@@ -103,4 +109,16 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
     });
   };
 
+  $scope.addItem = function(barterItemForm) {
+    // create barter item object
+    // send barter item object to data service
+    var barterItem = {
+      image: $scope.images[0],
+      images: $scope.images,
+      title: barterItemForm.title,
+      description: barterItemForm.description,
+
+    };
+    BarterItemService.Add(barterItem);
+  };
 });
