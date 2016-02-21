@@ -121,4 +121,13 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
     };
     BarterItemService.Add(barterItem);
   };
+})
+
+.controller('MyItemsController', function($scope, BarterItemService) {
+
+  $scope.listCanSwipe = true;
+
+  // TODO: async/onload?
+  $scope.items = BarterItemService.GetMine();
+
 });

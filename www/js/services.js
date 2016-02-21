@@ -45,11 +45,16 @@ angular.module('starter.services', [])
 
   }
 
+  function GetMine(){
+    return items.slice();
+  }
+
   return {
     Add: Add,
     Remove: Remove,
     Get: Get,
     Like: Like,
+    GetMine: GetMine
   };
 })
 
