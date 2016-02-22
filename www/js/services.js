@@ -1,6 +1,21 @@
 angular.module('starter.services', [])
 
-.factory('BarterItemService', function() {
+.factory('BarterItemService', function($resource) {
+
+  var userClient = $resource('http://localhost:8080/user/:_id/');
+  var barterItemClient = $resource('http://localhost:8080/barter-item/:_id/', {
+
+  }, {
+    vote: {
+      method: 'POST',
+      url: 'http://localhost:8080/barter-item/:_id/vote/'
+    },
+    recommendations: {
+      method: 'GET',
+      url: 'http://localhost:8080/barter-item/recommendations/',
+      isArray: true
+    }
+  });
 
   var items = [{
     id: 1,
@@ -25,36 +40,62 @@ angular.module('starter.services', [])
     image: 'http://c1.staticflickr.com/1/267/19067097362_14d8ed9389_n.jpg'
   }];
 
-  function Add(barteritem) {
-    items.push(barteritem);
+  var options = new FileUploadOptions();
+     options.fileKey="file";
+     options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1)+'.png';
+     options.mimeType="text/plain";
+     options.params = {};
+
+     var ft = new FileTransfer();
+     ft.upload(imageURI, encodeURI("http://some.server.com/upload.php"), win, fail, options);
+
+  function create(barteritem) {
+    var barteritemtmp =  {
+      _id: 'db8203a5-6bb8-40c9-bcd9-10b4cc92bf25',
+      title: '',
+      description: '',
+      image: ''
+    };
+    barterItemClient.save(barteritemtmp);
   }
 
-  function Remove(barteritem) {
+  function remove(barterItemId) {
 
   }
 
-  function Get() {
-    return items.slice();
+  function getRecommendations() {
+    return barterItemClient.recommendations();
   }
 
-  function Like() {
-
+  function like(barterItemId) {
+    barterItemClient.vote({
+      _id: barterItemId
+    }, {
+      like: true
+    });
   }
 
-  function DisLike() {
-
+  function disLike(barterItemId) {
+    barterItemClient.vote({
+      _id: barterItemId
+    }, {
+      like: false
+    });
   }
 
-  function GetMine(){
-    return items.slice();
+  function getMine() {
+    return barterItemClient.query({
+      currentUser: true
+    });
   }
 
   return {
-    Add: Add,
-    Remove: Remove,
-    Get: Get,
-    Like: Like,
-    GetMine: GetMine
+    Create: create,
+    Delete: remove,
+    GetRecommendations: getRecommendations,
+    Like: like,
+    DisLike: disLike,
+    GetMine: getMine
   };
 })
 

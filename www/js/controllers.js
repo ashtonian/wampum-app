@@ -46,7 +46,7 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
       active: []
     };
 
-    $scope.cards.active = BarterItemService.Get();
+    $scope.cards.active = BarterItemService.GetRecommendations();
 
     $scope.cardDestroyed = function(index) {
       $scope.cards.active.splice(index, 1);
@@ -56,7 +56,7 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
       // Set $scope.cards to null so that directive reloads
       $scope.cards.active = null;
       $timeout(function() {
-        $scope.cards.active = BarterItemService.Get();
+        $scope.cards.active = BarterItemService.GetRecommendations();
       });
     };
 
@@ -70,13 +70,6 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
     };
 
   })
-  .controller('myItemController', function($scope, $timeout, BarterItemService) {
-
-    $scope.items = BarterItemService.Get();
-
-
-  })
-
 .controller('AddItemController', function($scope, $cordovaDevice, $cordovaFile, $ionicPlatform, $cordovaEmailComposer, $ionicActionSheet, ImageService, BarterItemService) {
 
   $scope.images = [];
