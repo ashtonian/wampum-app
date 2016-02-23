@@ -70,51 +70,81 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
     };
 
   })
-.controller('AddItemController', function($scope, $cordovaDevice, $cordovaFile, $ionicPlatform, $cordovaEmailComposer, $ionicActionSheet, ImageService, BarterItemService) {
+  .controller('AddItemController', function($scope, $cordovaDevice, $cordovaFile, $ionicPlatform, $cordovaEmailComposer, $ionicActionSheet, ImageService, BarterItemService) {
 
-  $scope.images = [];
+    $scope.images = [];
 
-  $scope.addMedia = function() {
-    $scope.hideSheet = $ionicActionSheet.show({
-      buttons: [{
-        text: 'Take photo'
-      }, {
-        text: 'Photo from library'
-      }],
-      titleText: 'Add images',
-      cancelText: 'Cancel',
-      buttonClicked: function(index) {
-        $scope.addImage(index);
-      }
-    });
-  };
-
-  $scope.addImage = function(type) {
-    $scope.hideSheet();
-    ImageService.getImageFromSource(type).then(function(imgUrls) {
-      $scope.images.push.apply($scope.images, imgUrls);
-    });
-  };
-
-  $scope.removeImage = function(imgUrl) {
-    $scope.images = $scope.images.filter(function(el) {
-      return el !== imgUrl;
-    });
-  };
-
-  $scope.addItem = function(barterItemForm) {
-    // create barter item object
-    // send barter item object to data service
-    var barterItem = {
-      image: $scope.images[0],
-      images: $scope.images,
-      title: barterItemForm.title,
-      description: barterItemForm.description,
-
+    $scope.addMedia = function() {
+      $scope.hideSheet = $ionicActionSheet.show({
+        buttons: [{
+          text: 'Take photo'
+        }, {
+          text: 'Photo from library'
+        }],
+        titleText: 'Add images',
+        cancelText: 'Cancel',
+        buttonClicked: function(index) {
+          $scope.addImage(index);
+        }
+      });
     };
-    BarterItemService.Add(barterItem);
-  };
-})
+
+    $scope.addImage = function(type) {
+      $scope.hideSheet();
+      ImageService.getImageFromSource(type).then(function(imgUrls) {
+        $scope.images.push.apply($scope.images, imgUrls);
+      });
+    };
+
+    $scope.removeImage = function(imgUrl) {
+      $scope.images = $scope.images.filter(function(el) {
+        return el !== imgUrl;
+      });
+    };
+
+    // TODO: Convert to use promises
+    // TODO: Use file mover?
+    // TODO: memory usage?
+    // TODO: battery power/processor power converting?
+    function convertToDataURLviaCanvas(url, callback, outputFormat) {
+      var img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.onload = function() {
+        var canvas = document.createElement('CANVAS');
+        var ctx = canvas.getContext('2d');
+        var dataURL;
+        canvas.height = this.height;
+        canvas.width = this.width;
+        ctx.drawImage(this, 0, 0);
+        dataURL = canvas.toDataURL(outputFormat);
+        callback(dataURL);
+        canvas = null;
+      };
+      img.src = url;
+    }
+
+    // TODO: move to add item function?
+    function PostNewBarterItem(barterItemForm,images) {
+      var barterItem = {
+        images: images,
+        title: barterItemForm.title,
+        description: barterItemForm.description,
+      };
+      BarterItemService.Create(barterItem);
+    }
+    $scope.addItem = function(barterItemForm) {
+      // TODO: fix callbacks to use promises and make the bits be better at life
+      var imgData = [];
+      $scope.images.forEach(function(img) {
+        convertToDataURLviaCanvas(img, function(base64Img) {
+          imgData.push(base64Img);
+          if (imgData.length === $scope.images.length) {
+            PostNewBarterItem(barterItemForm,imgData);
+          }
+        });
+      });
+    };
+  })
 
 .controller('MyItemsController', function($scope, BarterItemService) {
 

@@ -2,17 +2,19 @@ angular.module('starter.services', [])
 
 .factory('BarterItemService', function($resource) {
 
-  var userClient = $resource('http://localhost:8080/user/:_id/');
-  var barterItemClient = $resource('http://localhost:8080/barter-item/:_id/', {
+   var base = 'https://wampum-api.herokuapp.com';
+  //TODO: var base = 'http://localhost:8080';
+  var userClient = $resource(base + '/user/:_id/');
+  var barterItemClient = $resource(base + '/barter-item/:_id/', {
 
   }, {
     vote: {
       method: 'POST',
-      url: 'http://localhost:8080/barter-item/:_id/vote/'
+      url: base + '/barter-item/:_id/vote/'
     },
     recommendations: {
       method: 'GET',
-      url: 'http://localhost:8080/barter-item/recommendations/',
+      url: base + '/barter-item/recommendations/',
       isArray: true
     }
   });
@@ -40,21 +42,13 @@ angular.module('starter.services', [])
     image: 'http://c1.staticflickr.com/1/267/19067097362_14d8ed9389_n.jpg'
   }];
 
-  var options = new FileUploadOptions();
-     options.fileKey="file";
-     options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1)+'.png';
-     options.mimeType="text/plain";
-     options.params = {};
-
-     var ft = new FileTransfer();
-     ft.upload(imageURI, encodeURI("http://some.server.com/upload.php"), win, fail, options);
 
   function create(barteritem) {
-    var barteritemtmp =  {
+    var barteritemtmp = {
       _id: 'db8203a5-6bb8-40c9-bcd9-10b4cc92bf25',
-      title: '',
-      description: '',
-      image: ''
+      title: barteritem.title,
+      description: barteritem.description,
+      images: barteritem.images
     };
     barterItemClient.save(barteritemtmp);
   }
