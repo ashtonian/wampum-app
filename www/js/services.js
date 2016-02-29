@@ -1,13 +1,11 @@
 angular.module('starter.services', [])
 
-.factory('BarterItemService', function($resource) {
-
-   var base = 'https://wampum-api.herokuapp.com';
+.factory('BarterItemService', function($resource, $cordovaFileTransfer) {
+  var scopeBarterItem = {};
+  var base = 'https://wampum-api.herokuapp.com';
   //TODO: var base = 'http://localhost:8080';
   var userClient = $resource(base + '/user/:_id/');
-  var barterItemClient = $resource(base + '/barter-item/:_id/', {
-
-  }, {
+  var barterItemClient = $resource(base + '/barter-item/:_id/', {}, {
     vote: {
       method: 'POST',
       url: base + '/barter-item/:_id/vote/'
@@ -16,46 +14,57 @@ angular.module('starter.services', [])
       method: 'GET',
       url: base + '/barter-item/recommendations/',
       isArray: true
+    },
+    photo: {
+      method: 'POST',
+      url: base + '/barter-item/:_id/photo/',
     }
   });
 
-  var items = [{
-    id: 1,
-    image: 'http://www.canticlecreative.com/wampum/bmwRims.jpg'
-  }, {
-    id: 2,
-    image: 'http://www.canticlecreative.com/wampum/guitairPedal.jpg'
-  }, {
-    id: 3,
-    image: 'http://www.canticlecreative.com/wampum/radarDetector.jpg'
-  }, {
-    id: 4,
-    image: 'http://www.canticlecreative.com/wampum/turntable.jpg'
-  }, {
-    id: 5,
-    image: 'http://www.canticlecreative.com/wampum/v60pourover.jpg'
-  }, {
-    id: 6,
-    image: 'http://c4.staticflickr.com/4/3937/19072713775_156a560e09_n.jpg'
-  }, {
-    id: 7,
-    image: 'http://c1.staticflickr.com/1/267/19067097362_14d8ed9389_n.jpg'
-  }];
 
+  function GetMimeTypeFromExtension(fileExtension) {
+    if (fileExtension === '.png')
+      return "image/png";
+    if (fileExtension === '.jpeg' || fileExtension === '.jpg')
+      return "image/jpeg";
+  }
 
-  function create(barteritem) {
-    var barteritemtmp = {
-      _id: 'db8203a5-6bb8-40c9-bcd9-10b4cc92bf25',
-      title: barteritem.title,
-      description: barteritem.description,
-      images: barteritem.images
+  function GetUploadOptions(fileName) {
+    var fileExtension = fileName.substr(fileName.lastIndexOf('.'));
+    var options = new FileUploadOptions();
+    //options.fileKey = fileName;
+    //options.fileKey = 'file';
+    /*options.fileName = fileName; */
+    options.httpMethod = "PUT";
+    options.headers = {
+      'Content-Type': GetMimeTypeFromExtension(fileExtension),
+      'x-amz-acl': 'public-read'
     };
-    barterItemClient.save(barteritemtmp);
+    options.chunkedMode = true;
+    options.encodeURI = false;
+    return options;
   }
 
-  function remove(barterItemId) {
+  // TODO: use promisese better and All ?
+  function create(barterItemToCreate) {
+    barterItemClient.save(barterItemToCreate, function(postResponse, headers) {
+      for (var i = 0; i < postResponse.uploadInstructions.length; i++) {
+        var instructions = postResponse.uploadInstructions[i];
+        $cordovaFileTransfer.upload(instructions.uploadUrl, instructions.deviceFileUrl, GetUploadOptions(instructions.fileName)).then(Success).catch(Fail);
+      }
+    });
+  }
+
+  function Success(datanshit) {
+    console.log("Success " + datanshit);
+  }
+
+  function Fail(datanshit) {
+    console.log("Fail " + datanshit);
 
   }
+
+  function remove(barterItemId) {}
 
   function getRecommendations() {
     return barterItemClient.recommendations();
@@ -145,7 +154,6 @@ angular.module('starter.services', [])
   return {
     getImageFromSource: getImageFromSource
   };
-
 })
 
 ;

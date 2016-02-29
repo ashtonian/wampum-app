@@ -102,47 +102,16 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
       });
     };
 
-    // TODO: Convert to use promises
-    // TODO: Use file mover?
-    // TODO: memory usage?
-    // TODO: battery power/processor power converting?
-    function convertToDataURLviaCanvas(url, callback, outputFormat) {
-      var img = new Image();
-      img.crossOrigin = 'Anonymous';
-      img.onload = function() {
-        var canvas = document.createElement('CANVAS');
-        var ctx = canvas.getContext('2d');
-        var dataURL;
-        canvas.height = this.height;
-        canvas.width = this.width;
-        ctx.drawImage(this, 0, 0);
-        dataURL = canvas.toDataURL(outputFormat);
-        callback(dataURL);
-        canvas = null;
-      };
-      img.src = url;
-    }
-
-    // TODO: move to add item function?
-    function PostNewBarterItem(barterItemForm,images) {
-      var barterItem = {
-        images: images,
-        title: barterItemForm.title,
-        description: barterItemForm.description,
-      };
-      BarterItemService.Create(barterItem);
-    }
     $scope.addItem = function(barterItemForm) {
-      // TODO: fix callbacks to use promises and make the bits be better at life
-      var imgData = [];
-      $scope.images.forEach(function(img) {
-        convertToDataURLviaCanvas(img, function(base64Img) {
-          imgData.push(base64Img);
-          if (imgData.length === $scope.images.length) {
-            PostNewBarterItem(barterItemForm,imgData);
-          }
-        });
-      });
+      // TODO: why does this get Triggered?
+      if (barterItemForm) {
+        var barterItem = {
+          images: $scope.images,
+          title: barterItemForm.title,
+          description: barterItemForm.description,
+        };
+        BarterItemService.Create(barterItem);
+      }
     };
   })
 
