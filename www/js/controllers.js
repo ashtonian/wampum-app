@@ -46,20 +46,23 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2'])
       active: []
     };
 
-    $scope.cards.active = BarterItemService.GetRecommendations();
-
     $scope.cardDestroyed = function(index) {
       $scope.cards.active.splice(index, 1);
     };
+    $scope.refreshCards = RefreshCards;
 
-    $scope.refreshCards = function() {
-      // Set $scope.cards to null so that directive reloads
+    function RefreshCards() {
+      // set cards.active to null to reload the directive
       $scope.cards.active = null;
-      $timeout(function() {
-        $scope.cards.active = BarterItemService.GetRecommendations();
+      BarterItemService.GetRecommendations().$promise.then(function(recommendations) {
+        // set the first image for the card from the images array.
+        for (var i = 0; i < recommendations.length; i++) {
+          recommendations[i].image = recommendations[i].images[0];
+        }
+        $scope.cards.active = recommendations;
       });
-    };
-
+    }
+    RefreshCards();
 
     $scope.cardSwipedLeft = function(index) {
 
