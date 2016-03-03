@@ -1,4 +1,5 @@
 {
   "name": "Wampum",
-  "app_id": "329899ce"
+  "app_id": "329899ce",
+  "gulpStartupTasks": ["sass", "watch"]
 }
