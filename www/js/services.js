@@ -21,7 +21,6 @@ angular.module('starter.services', [])
     }
   });
 
-
   function GetMimeTypeFromExtension(fileExtension) {
     if (fileExtension === '.png')
       return "image/png";

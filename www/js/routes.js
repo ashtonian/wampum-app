@@ -19,6 +19,7 @@ angular.module('starter.routes', [])
         }
       }
     })
+  
     .state('app.additem', {
       url: '/additem',
       views: {
