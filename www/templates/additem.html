@@ -3,7 +3,9 @@
     <h1>Add Item</h1>
     <form  ng-submit="addItem(barterItemForm)">
 
-      <button class="button button-block button-primary" ng-click="addMedia()">Add Photo</button>
+       <div class="col text-center">
+      <button class="button icon-left ion-camera button-calm" ng-click="addMedia()">Add Photo</button>
+       </div>
       <ion-scroll direction="x" style="height:400px; min-height: 200px; overflow: scroll; white-space: nowrap;">
         <div ng-repeat="image in images">
           <a class="item" ng-click="removeImage('{{image}}')">
@@ -20,7 +22,10 @@
       </label>
 
       <div class="padding">
-        <button class="button button-block button-positive" type="submit">Create Item</button>
+         <div class="col text-center">
+        <button class="button icon-left ion-color-wand button-calm" type="submit">Add Item</button>
+         </div>
+         
       </div>
     </form>
 
