@@ -22,8 +22,8 @@ td-card img {
   position: absolute;
   top: 10px;
   left: 10px;
-  font-size: 30px;
-  color: #4CAF50;
+  font-size: 40px;
+  color: #593ec9;
   opacity: 0;
 }
 
@@ -31,8 +31,8 @@ td-card img {
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 30px;
-  color: #F44336;
+  font-size: 40px;
+  color: #bf22ad;
   opacity: 0;
 }
 
@@ -60,8 +60,8 @@ td-card#end-card {
 }
 
 .fade {
-  -webkit-transition: 0.2s opacity linear;
-  transition: 0.2s opacity linear;
+  -webkit-transition: 0.1s opacity linear;
+  transition: 0.1s opacity linear;
   opacity: 0;
 }
 
