@@ -3930,11 +3930,10 @@ a.subdued {
   .bar.bar-stable {
     border-color: #b2b2b2;
     background-color: #f8f8f8;
-    height: 100px;
     background-image: linear-gradient(0deg, #b2b2b2, #b2b2b2 50%, transparent 50%);
     color: #444; }
     .bar.bar-stable .title {
-      color: #2c3060; }
+      color: #444; }
     .bar.bar-stable.bar-footer {
       background-image: linear-gradient(180deg, #b2b2b2, #b2b2b2 50%, transparent 50%); }
   .bar.bar-positive {
