@@ -8,3 +8,6 @@ plugins/
 
 #OS X
 *.DS_Store
+
+#bable build output folder
+www/js/*.*
