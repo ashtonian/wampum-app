@@ -1,6 +1,6 @@
 {
   "name": "ionic-tinder-cards-2",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "homepage": "https://github.com/loringdodge/ionic-ion-tinder-cards-2",
   "authors": [
     "Max Lynch <max@drifty.com>",
@@ -29,12 +29,5 @@
   "license": "MIT",
   "dependencies": {
     "collide": "1.0.0-beta.3"
-  },
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ]
+  }
 }

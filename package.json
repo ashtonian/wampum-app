@@ -19,7 +19,9 @@
     "shelljs": "^0.3.0"
   },
   "cordovaPlugins": [
-    "org.apache.cordova.camera"
+    "cordova-plugin-camera",
+    "cordova-plugin-image-picker",
+    "cordova-plugin-file-transfer"
   ],
   "cordovaPlatforms": [
     "ios",

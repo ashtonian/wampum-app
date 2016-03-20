@@ -10,49 +10,94 @@ var babel = require("gulp-babel");
 var plumber = require("gulp-plumber");
 
 var paths = {
-    es6: ['./www-es6/**/*.js'],
-    sass: ['./scss/**/*.scss']
+    jsSource: ['./www-src/**/*.js'],
+    jsOutput: './www/',
+    sassSource: ['./www-src/scss/**/*.scss'],
+    sassOutput: './www/css/',
+    htmlSource: ['./www-src/**/*.html'],
+    htmlOutput: './www/',
+    libSource: ['./www-src/lib/**/*.*'],
+    libOutput: './www/lib/',
+    imageSource: ['./www-src/**/*.png'],
+    imageOutput: './www/',
+    cssSource: ['./www-src/css/*.css'],
+    cssOutput: './www/css'
 };
 
-gulp.task("babel", function () {
-    return gulp.src(paths.es6)
+gulp.task("process-js", () => {
+    // TODO: minify output and use source maps
+    return gulp.src(paths.jsSource)
         .pipe(plumber())
         .pipe(babel({
             presets: ['es2015']
         }))
-        .pipe(gulp.dest("www/"));
+        .pipe(gulp.dest(paths.jsOutput));
 });
 
-gulp.task('sass', function (done) {
-    gulp.src('./scss/ionic.app.scss')
+gulp.task('process-sass', done => {
+    gulp.src(paths.sassSource)
         .pipe(sass())
         .on('error', sass.logError)
-        .pipe(gulp.dest('./www/css/'))
+        .pipe(gulp.dest(paths.sassOutput))
         .pipe(minifyCss({
             keepSpecialComments: 0
         }))
         .pipe(rename({
             extname: '.min.css'
         }))
-        .pipe(gulp.dest('./www/css/'))
+        .pipe(gulp.dest(paths.sassOutput))
         .on('end', done);
 });
 
-gulp.task('default', ['babel', 'sass']);
-
-gulp.task('watch', function () {
-    gulp.watch(paths.es6, ['babel']);
-    gulp.watch(paths.sass, ['sass']);
+gulp.task('process-lib-files', () => {
+    gulp.src(paths.libSource)
+        // don't perform minification, this should rarely be used
+        .pipe(gulp.dest(paths.libOutput));
 });
 
-gulp.task('install', ['git-check'], function () {
+gulp.task('process-html', () => {
+    // TODO: minify output for release mode?
+    gulp.src(paths.htmlSource)
+        .pipe(gulp.dest(paths.htmlOutput));
+});
+
+gulp.task('process-images', () => {
+    // TODO: minify lossless
+    gulp.src(paths.imageSource)
+        .pipe(gulp.dest(paths.imageOutput));
+});
+
+
+gulp.task('process-css', () => {
+    gulp.src(paths.cssSource)
+        // don't perform minification, this should rarely be used
+        .pipe(gulp.dest(paths.cssOutput));
+});
+
+gulp.task('default', ['process-js', 'process-sass', 'process-lib-files', 'process-html', 'process-images', 'process-css']);
+
+gulp.task('watch', () => {
+    gulp.watch(paths.imageSource, ['process-images']);
+    gulp.watch(paths.htmlSource, ['process-html']);
+    gulp.watch(paths.libSource, ['process-lib-files']);
+    gulp.watch(paths.jsSource, ['process-js']);
+    gulp.watch(paths.sassSource, ['process-sass']);
+    gulp.watch(paths.cssSource, ['process-css']);
+
+});
+
+
+
+
+/** CAME WITH IONIC TODO: assess need and/o add to? */
+gulp.task('install', ['git-check'], () => {
     return bower.commands.install()
-        .on('log', function (data) {
+        .on('log', data => {
             gutil.log('bower', gutil.colors.cyan(data.id), data.message);
         });
 });
 
-gulp.task('git-check', function (done) {
+gulp.task('git-check', done => {
     if (!sh.which('git')) {
         console.log(
             '  ' + gutil.colors.red('Git is not installed.'),

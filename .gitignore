@@ -9,5 +9,5 @@ plugins/
 #OS X
 *.DS_Store
 
-#bable build output folder
-www/js/*.*
+# www-src build output folder
+www/*

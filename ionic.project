@@ -2,7 +2,12 @@
   "name": "Wampum",
   "app_id": "329899ce",
   "gulpStartupTasks": [
-    "sass",
+    "process-html",
+    "process-js",
+    "process-lib-files",
+    "process-sass",
+    "process-images",
+    "process-css",
     "watch"
   ],
   "watchPatterns": [

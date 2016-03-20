@@ -1,0 +1,33 @@
+<ion-view view-title="Add Item">
+  <ion-pane ng-controller="AddItemController">
+    <h1>Add Item</h1>
+    <form  ng-submit="addItem(barterItemForm)">
+
+       <div class="col text-center">
+      <button class="button icon-left ion-camera button-calm" ng-click="addMedia()">Add Photo</button>
+       </div>
+      <ion-scroll direction="x" style="height:400px; min-height: 200px; overflow: scroll; white-space: nowrap;">
+        <div ng-repeat="image in images">
+          <a class="item" ng-click="removeImage('{{image}}')">
+            <img ng-src="{{image}}" style="height:200px; padding: 5px 5px 5px 5px;"/>
+          </a>
+        </div>
+      </ion-scroll>
+
+      <label class="item item-input">
+        <input ng-model="barterItemForm.title" placeholder="Title: what are you bartering?" type="text">
+      </label>
+      <label class="item item-input">
+        <input ng-model="barterItemForm.description" placeholder="Description: tell us more about your thing!" type="text">
+      </label>
+
+      <div class="padding">
+         <div class="col text-center">
+        <button class="button icon-left ion-color-wand button-calm" type="submit">Submit Item</button>
+         </div>
+         
+      </div>
+    </form>
+
+  </ion-pane>
+</ion-view>
