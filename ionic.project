@@ -7,7 +7,6 @@
     "process-lib-files",
     "process-sass",
     "process-images",
-    "process-css",
     "watch"
   ],
   "watchPatterns": [
