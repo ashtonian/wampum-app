@@ -7,8 +7,7 @@
     "process-lib-files",
     "process-sass",
     "process-images",
-    "watch",
-    "sass"
+    "watch"
   ],
   "watchPatterns": [
     "www/**/*",
