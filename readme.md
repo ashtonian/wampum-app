@@ -16,6 +16,8 @@ https://devdactic.com/complete-image-guide-ionic/#comments -- Adding photo from 
 
 http://codepen.io/leob6/post/quick-tip-using-gulp-to-customize-the-serve-run-and-build-process-for-your-ionic-framework-apps -- read to customize build/serve hooks to run gulp
 
+https://market.ionic.io/plugins -- useful plugins and templates?
+
 
 npm, ionic, cordova, gulp? required to to be installed globally 
 
