@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2']).controller('AppCtrl', function ($scope, $ionicModal, $timeout) {
+angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2']).controller('AppCtrl', ($scope, $ionicModal, $timeout) => {
 
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
@@ -15,37 +15,37 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2']).control
     // Create the login modal that we will use later
     $ionicModal.fromTemplateUrl('templates/login.html', {
         scope: $scope
-    }).then(function (modal) {
+    }).then(modal => {
         $scope.modal = modal;
     });
 
     // Triggered in the login modal to close it
-    $scope.closeLogin = function () {
+    $scope.closeLogin = () => {
         $scope.modal.hide();
     };
 
     // Open the login modal
-    $scope.login = function () {
+    $scope.login = () => {
         $scope.modal.show();
     };
 
     // Perform the login action when the user submits the login form
-    $scope.doLogin = function () {
+    $scope.doLogin = () => {
         console.log('Doing login', $scope.loginData);
 
         // Simulate a login delay. Remove this and replace with your login
         // code if using a login system
-        $timeout(function () {
+        $timeout(() => {
             $scope.closeLogin();
         }, 1000);
     };
-}).controller('cardsController', function ($scope, TDCardDelegate, $timeout, BarterItemService) {
+}).controller('cardsController', ($scope, TDCardDelegate, $timeout, BarterItemService) => {
 
     $scope.cards = {
         active: []
     };
 
-    $scope.cardDestroyed = function (index) {
+    $scope.cardDestroyed = (index) => {
         $scope.cards.active.splice(index, 1);
     };
     $scope.refreshCards = RefreshCards;
@@ -53,24 +53,26 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2']).control
     function RefreshCards() {
         // set cards.active to null to reload the directive
         $scope.cards.active = null;
-        BarterItemService.GetRecommendations().$promise.then(function (recommendations) {
+        BarterItemService.GetRecommendations().$promise.then((recommendations) => {
             // set the first image for the card from the images array.
-            for (var i = 0; i < recommendations.length; i++) {
-                recommendations[i].image = recommendations[i].images[0];
-            }
+            recommendations.foreach(recommendation => {
+                recommendation.image = recommendation.images[0];
+            })
+            
             $scope.cards.active = recommendations;
         });
     }
     RefreshCards();
 
-    $scope.cardSwipedLeft = function (index) {};
+    $scope.cardSwipedLeft = (index) => {};
 
-    $scope.cardSwipedRight = function (index) {};
-}).controller('AddItemController', function ($scope, $cordovaDevice, $cordovaFile, $ionicPlatform, $cordovaEmailComposer, $ionicActionSheet, ImageService, BarterItemService) {
+    $scope.cardSwipedRight = (index) => {};
+
+}).controller('AddItemController', ($scope, $cordovaDevice, $cordovaFile, $ionicPlatform, $cordovaEmailComposer, $ionicActionSheet, ImageService, BarterItemService) => {
 
     $scope.images = [];
 
-    $scope.addMedia = function () {
+    $scope.addMedia = () => {
         $scope.hideSheet = $ionicActionSheet.show({
             buttons: [{
                 text: 'Take photo'
@@ -85,31 +87,36 @@ angular.module('starter.controllers', ['ionic.contrib.ui.tinderCards2']).control
         });
     };
 
-    $scope.addImage = function (type) {
+    $scope.addImage = (type) => {
         $scope.hideSheet();
-        ImageService.getImageFromSource(type).then(function (imgUrls) {
+        ImageService.getImageFromSource(type).then((imgUrls) => {
             $scope.images.push.apply($scope.images, imgUrls);
         });
     };
 
-    $scope.removeImage = function (imgUrl) {
-        $scope.images = $scope.images.filter(function (el) {
+    $scope.removeImage = (imgUrl) => {
+        $scope.images = $scope.images.filter((el) => {
             return el !== imgUrl;
         });
     };
 
-    $scope.addItem = function (barterItemForm) {
+    $scope.addItem = (barterItemForm) => {
         // TODO: why does this get Triggered?
         if (barterItemForm) {
             var barterItem = {
-                images: $scope.images,
+                images: $scope.images.map(image => {
+                    return {
+                        devicePath: image,
+                        fileExtension: image.substr(image.lastIndexOf('.'))
+                    };
+                }),
                 title: barterItemForm.title,
                 description: barterItemForm.description
             };
             BarterItemService.Create(barterItem);
         }
     };
-}).controller('MyItemsController', function ($scope, BarterItemService) {
+}).controller('MyItemsController', ($scope, BarterItemService) => {
 
     $scope.listCanSwipe = true;
 

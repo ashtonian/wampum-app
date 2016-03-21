@@ -29,12 +29,8 @@ angular.module('starter.services', []).factory('BarterItemService', (
         if (fileExtension === '.jpeg' || fileExtension === '.jpg') return "image/jpeg";
     }
 
-    function GetUploadOptions(fileName) {
-        var fileExtension = fileName.substr(fileName.lastIndexOf('.'));
+    function GetUploadOptions(fileExtension) {
         var options = new FileUploadOptions();
-        //options.fileKey = fileName;
-        //options.fileKey = 'file';
-        /*options.fileName = fileName; */
         options.httpMethod = "PUT";
         options.headers = {
             'Content-Type': GetMimeTypeFromExtension(fileExtension),
@@ -47,10 +43,12 @@ angular.module('starter.services', []).factory('BarterItemService', (
 
     // TODO: use promisese better and All ?
     function create(barterItemToCreate) {
-        barterItemClient.save(barterItemToCreate, (postResponse, headers) => {
+        barterItemClient.save(barterItemToCreate).$promise.then((postResponse, headers) => {
+            // BATCH promise
             for (var i = 0; i < postResponse.uploadInstructions.length; i++) {
                 var instructions = postResponse.uploadInstructions[i];
-                $cordovaFileTransfer.upload(instructions.uploadUrl, instructions.deviceFileUrl, GetUploadOptions(instructions.fileName)).then(Success).catch(Fail);
+                var fileExtension = instructions.devicePath.substr(instructions.devicePath.lastIndexOf('.'));
+                $cordovaFileTransfer.upload(instructions.uploadUrl, instructions.devicePath, GetUploadOptions(fileExtension)).then(Success).catch(Fail);
             }
         });
     }
@@ -128,21 +126,16 @@ angular.module('starter.services', []).factory('BarterItemService', (
     }
 
     function getImageFromSource(source) {
-
         if (source === 0 || source === 'camera') {
             // TODO: not sure if this is the proper way to do this or if I should just return [results]
-            return $q(resolve => {
-                $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.CAMERA)).then(results => {
-                    resolve([results]);
-                });
+            return $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.CAMERA)).then(results => {
+                return [results];
             });
         } else if (source === 1 || source === 'imagePicker') {
             return $cordovaImagePicker.getPictures(getImagePickerOptions());
         } else if (source === 2 || source === 'photoLibrary') {
-            return $q(resolve => {
-                $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.PHOTOLIBRARY)).then(results => {
-                    resolve([results]);
-                });
+            return $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.PHOTOLIBRARY)).then(results => {
+                return [results];
             });
         }
     }
