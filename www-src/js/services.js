@@ -29,8 +29,12 @@ angular.module('starter.services', []).factory('BarterItemService', (
         if (fileExtension === '.jpeg' || fileExtension === '.jpg') return "image/jpeg";
     }
 
-    function GetUploadOptions(fileExtension) {
+    /*    uploadFileName: image.imageId + image.fileExtension,
+        uploadExtension: image.fileExtension,*/
+    function GetUploadOptions(fileName, fileExtension) {
         var options = new FileUploadOptions();
+        options.fileKey = fileName;
+        options.fileName = fileName;
         options.httpMethod = "PUT";
         options.headers = {
             'Content-Type': GetMimeTypeFromExtension(fileExtension),
@@ -41,14 +45,12 @@ angular.module('starter.services', []).factory('BarterItemService', (
         return options;
     }
 
-    // TODO: use promisese better and All ?
     function create(barterItemToCreate) {
         barterItemClient.save(barterItemToCreate).$promise.then((postResponse, headers) => {
-            // BATCH promise
+            // TODO: BATCH promises
             for (var i = 0; i < postResponse.uploadInstructions.length; i++) {
                 var instructions = postResponse.uploadInstructions[i];
-                var fileExtension = instructions.devicePath.substr(instructions.devicePath.lastIndexOf('.'));
-                $cordovaFileTransfer.upload(instructions.uploadUrl, instructions.devicePath, GetUploadOptions(fileExtension)).then(Success).catch(Fail);
+                $cordovaFileTransfer.upload(instructions.uploadUrl, instructions.devicePath, GetUploadOptions(instructions.fileName, instructions.fileExtension)).then(Success).catch(Fail);
             }
         });
     }
