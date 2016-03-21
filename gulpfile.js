@@ -67,14 +67,7 @@ gulp.task('process-images', () => {
         .pipe(gulp.dest(paths.imageOutput));
 });
 
-
-gulp.task('process-css', () => {
-    gulp.src(paths.cssSource)
-        // don't perform minification, this should rarely be used
-        .pipe(gulp.dest(paths.cssOutput));
-});
-
-gulp.task('default', ['process-js', 'process-sass', 'process-lib-files', 'process-html', 'process-images', 'process-css']);
+gulp.task('default', ['process-js', 'process-sass', 'process-lib-files', 'process-html', 'process-images']);
 
 gulp.task('watch', () => {
     gulp.watch(paths.imageSource, ['process-images']);
@@ -82,8 +75,6 @@ gulp.task('watch', () => {
     gulp.watch(paths.libSource, ['process-lib-files']);
     gulp.watch(paths.jsSource, ['process-js']);
     gulp.watch(paths.sassSource, ['process-sass']);
-    gulp.watch(paths.cssSource, ['process-css']);
-
 });
 
 
