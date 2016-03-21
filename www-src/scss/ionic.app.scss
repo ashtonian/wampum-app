@@ -13,13 +13,6 @@ $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
 
-// The path for our ionicons font files, relative to the built CSS in www/css
-$ionicons-font-path: "../lib/ionic/release/fonts" !default;
-
-// Include all of Ionic
-@import "www/lib/ionic/scss/ionic";
-
-
 $dark:         #2c3060 !default;
 $light:        #ffffff !default;
 $stable:       #2c3060 !default;
@@ -31,4 +24,11 @@ $assertive:    #2c3060 !default;
 $royal:        #2c3060 !default;
 $dark:         #2c3060 !default;
 
-$bar-stable:   #2c3060 !default;
+$bar-stable:   #fff !default;
+
+
+// The path for our ionicons font files, relative to the built CSS in www/css
+$ionicons-font-path: "../lib/ionic/release/fonts" !default;
+
+// Include all of Ionic
+@import "www/lib/ionic/scss/ionic";
