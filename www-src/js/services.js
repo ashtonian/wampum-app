@@ -1,6 +1,9 @@
 'use strict';
 
-angular.module('starter.services', []).factory('BarterItemService', function ($resource, $cordovaFileTransfer) {
+angular.module('starter.services', []).factory('BarterItemService', (
+    $resource,
+    $cordovaFileTransfer
+) => {
     var scopeBarterItem = {};
     var base = 'https://wampum-api.herokuapp.com';
     //TODO: var base = 'http://localhost:8080';
@@ -44,7 +47,7 @@ angular.module('starter.services', []).factory('BarterItemService', function ($r
 
     // TODO: use promisese better and All ?
     function create(barterItemToCreate) {
-        barterItemClient.save(barterItemToCreate, function (postResponse, headers) {
+        barterItemClient.save(barterItemToCreate, (postResponse, headers) => {
             for (var i = 0; i < postResponse.uploadInstructions.length; i++) {
                 var instructions = postResponse.uploadInstructions[i];
                 $cordovaFileTransfer.upload(instructions.uploadUrl, instructions.deviceFileUrl, GetUploadOptions(instructions.fileName)).then(Success).catch(Fail);
@@ -96,7 +99,7 @@ angular.module('starter.services', []).factory('BarterItemService', function ($r
         DisLike: disLike,
         GetMine: getMine
     };
-}).factory('ImageService', function ($q, $cordovaImagePicker, $cordovaCamera) {
+}).factory('ImageService', ($q, $cordovaImagePicker, $cordovaCamera) => {
 
     function getCameraOptions(cameraSource, cameraPopoverOptions) {
         return {
@@ -128,16 +131,16 @@ angular.module('starter.services', []).factory('BarterItemService', function ($r
 
         if (source === 0 || source === 'camera') {
             // TODO: not sure if this is the proper way to do this or if I should just return [results]
-            return $q(function (resolve) {
-                $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.CAMERA)).then(function (results) {
+            return $q(resolve => {
+                $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.CAMERA)).then(results => {
                     resolve([results]);
                 });
             });
         } else if (source === 1 || source === 'imagePicker') {
             return $cordovaImagePicker.getPictures(getImagePickerOptions());
         } else if (source === 2 || source === 'photoLibrary') {
-            return $q(function (resolve) {
-                $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.PHOTOLIBRARY)).then(function (results) {
+            return $q(resolve => {
+                $cordovaCamera.getPicture(getCameraOptions(Camera.PictureSourceType.PHOTOLIBRARY)).then(results => {
                     resolve([results]);
                 });
             });
@@ -147,4 +150,59 @@ angular.module('starter.services', []).factory('BarterItemService', function ($r
     return {
         getImageFromSource: getImageFromSource
     };
-});
+}).factory('AuthenticationService', ($log, $rootScope, $http, authService, localStorageService) => {
+    $log.info('AuthenticationService');
+
+    let loggedIn = false;
+
+    let service = {
+        login: credentials => {
+
+            $http.post('https://login', {
+                    user: credentials
+                }, {
+                    ignoreAuthModule: true
+                })
+                .success((data, status, headers, config) => {
+                    loggedIn = true;
+
+                    $http.defaults.headers.common.Authorization = data.authorizationToken;
+                    localStorageService.set('authorizationToken', data.authorizationToken);
+
+                    authService.loginConfirmed(data, config => {
+                        config.headers.Authorization = data.authorizationToken;
+                        return config;
+                    });
+                })
+
+            .error((data, status, headers, config) => {
+                $rootScope.$broadcast('event:auth-login-failed', status);
+            });
+        },
+
+        isLoggedIn: () => {
+            return loggedIn;
+        },
+
+        loginCancelled: () => {
+            authService.loginCancelled();
+        },
+
+        logout: () => {
+            loggedIn = false;
+
+            $http.post('https://logout', {}, {
+                    ignoreAuthModule: true
+                })
+                .finally(data => {
+                    localStorageService.remove('authorizationToken');
+                    delete $http.defaults.headers.common.Authorization;
+                    $rootScope.$broadcast('event:auth-logout-complete');
+                });
+        }
+    };
+
+    return service;
+})
+
+;

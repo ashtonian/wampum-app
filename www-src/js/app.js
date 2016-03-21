@@ -6,7 +6,17 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.services', 'starter.controllers', 'starter.routes', 'ionic.contrib.ui.tinderCards2', 'ngCordova', 'ngResource'])
+angular.module('starter', [
+    'ionic',
+    'starter.services',
+    'starter.controllers',
+    'starter.routes',
+    'ionic.contrib.ui.tinderCards2',
+    'ngCordova',
+    'ngResource',
+    'http-auth-interceptor',
+    'LocalStorageModule'
+])
 
 .run($ionicPlatform => {
         $ionicPlatform.ready(() => {
@@ -15,8 +25,8 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers', '
             if (window.cordova && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
                 cordova.plugins.Keyboard.disableScroll(true);
-
             }
+
             if (window.StatusBar) {
                 // org.apache.cordova.statusbar required
                 StatusBar.styleDefault();
@@ -26,5 +36,3 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers', '
     .config($compileProvider => {
         $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
     });
-
- 
