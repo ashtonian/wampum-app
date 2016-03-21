@@ -24,33 +24,12 @@ angular.module('starter.services', []).factory('BarterItemService', (
         }
     });
 
-    function GetMimeTypeFromExtension(fileExtension) {
-        if (fileExtension === '.png') return "image/png";
-        if (fileExtension === '.jpeg' || fileExtension === '.jpg') return "image/jpeg";
-    }
-
-    /*    uploadFileName: image.imageId + image.fileExtension,
-        uploadExtension: image.fileExtension,*/
-    function GetUploadOptions(fileName, fileExtension) {
-        var options = new FileUploadOptions();
-        options.fileKey = fileName;
-        options.fileName = fileName;
-        options.httpMethod = "PUT";
-        options.headers = {
-            'Content-Type': GetMimeTypeFromExtension(fileExtension),
-            'x-amz-acl': 'public-read'
-        };
-        options.chunkedMode = true;
-        options.encodeURI = false;
-        return options;
-    }
-
     function create(barterItemToCreate) {
         barterItemClient.save(barterItemToCreate).$promise.then((postResponse, headers) => {
             // TODO: BATCH promises
             for (var i = 0; i < postResponse.uploadInstructions.length; i++) {
                 var instructions = postResponse.uploadInstructions[i];
-                $cordovaFileTransfer.upload(instructions.uploadUrl, instructions.devicePath, GetUploadOptions(instructions.fileName, instructions.fileExtension)).then(Success).catch(Fail);
+                $cordovaFileTransfer.upload(instructions.uploadUrl, instructions.devicePath, instructions.options).then(Success).catch(Fail);
             }
         });
     }
