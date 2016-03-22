@@ -1,0 +1,45 @@
+/*
+Hi there, this is a custom Ionic theme for Wampum called Seashell lol
+*/
+
+/* custom colors */
+
+$positive:                        #6267a2 !default;
+$calm:                            #6267a2 !default;
+$balanced:                        #6267a2 !default;
+$energized:                       #6267a2 !default;
+$assertive:                       #6267a2 !default;
+$royal:                           #2c3060 !default;
+$dark:                            #2c3060 !default;
+$light:                           #fff !default;
+
+/* side menu mods */
+
+.menu {
+	background-color: $dark;
+	.bar-header {
+		background-color: $dark;
+		background-image: none;
+		border-color: $light;
+	}
+.list {
+   .item {
+      background-color: $light;
+      border-color: $light;
+      border-left: 5px solid $light;
+      color: $calm;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      font-size: 15px;
+
+      &.active {
+         border-left: 5px solid $calm;
+      }
+   }
+   }
+} 
+
+.ion-header-bar {
+   height: 100px;
+   background-color: $light;
+}
