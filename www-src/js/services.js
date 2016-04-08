@@ -124,59 +124,92 @@ angular.module('starter.services', []).factory('BarterItemService', (
     return {
         getImageFromSource: getImageFromSource
     };
-}).factory('AuthenticationService', ($log, $rootScope, $http, authService, localStorageService) => {
-    $log.info('AuthenticationService');
+})
 
-    let loggedIn = false;
+.service('AuthService', ($q, $http, API_ENDPOINT) => {
+    var LOCAL_TOKEN_KEY = 'yourTokenKey';
+    var isAuthenticated = false;
+    var authToken;
 
-    let service = {
-        login: credentials => {
-
-            $http.post('https://login', {
-                    user: credentials
-                }, {
-                    ignoreAuthModule: true
-                })
-                .success((data, status, headers, config) => {
-                    loggedIn = true;
-
-                    $http.defaults.headers.common.Authorization = data.authorizationToken;
-                    localStorageService.set('authorizationToken', data.authorizationToken);
-
-                    authService.loginConfirmed(data, config => {
-                        config.headers.Authorization = data.authorizationToken;
-                        return config;
-                    });
-                })
-
-            .error((data, status, headers, config) => {
-                $rootScope.$broadcast('event:auth-login-failed', status);
-            });
-        },
-
-        isLoggedIn: () => {
-            return loggedIn;
-        },
-
-        loginCancelled: () => {
-            authService.loginCancelled();
-        },
-
-        logout: () => {
-            loggedIn = false;
-
-            $http.post('https://logout', {}, {
-                    ignoreAuthModule: true
-                })
-                .finally(data => {
-                    localStorageService.remove('authorizationToken');
-                    delete $http.defaults.headers.common.Authorization;
-                    $rootScope.$broadcast('event:auth-logout-complete');
-                });
+    function loadUserCredentials() {
+        var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
+        if (token) {
+            useCredentials(token);
         }
+    }
+
+    function storeUserCredentials(token) {
+        window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
+        useCredentials(token);
+    }
+
+    function useCredentials(token) {
+        isAuthenticated = true;
+        authToken = token;
+        $http.defaults.headers.common.Authorization = authToken;
+    }
+
+    function destroyUserCredentials() {
+        authToken = undefined;
+        isAuthenticated = false;
+        $http.defaults.headers.common.Authorization = undefined;
+        window.localStorage.removeItem(LOCAL_TOKEN_KEY);
+    }
+
+    var register = (user) => {
+        return $q((resolve, reject) => {
+            $http.post(API_ENDPOINT.url + '/signup', user).then(function(result) {
+                if (result.data.success) {
+                    resolve(result.data.msg);
+                } else {
+                    reject(result.data.msg);
+                }
+            });
+        });
     };
 
-    return service;
+    var login = (user) => {
+        return $q((resolve, reject) => {
+            $http.post(API_ENDPOINT.url + '/authenticate', user).then(function(result) {
+                if (result.data.success) {
+                    storeUserCredentials(result.data.token);
+                    resolve(result.data.msg);
+                } else {
+                    reject(result.data.msg);
+                }
+            });
+        });
+    };
+
+    var logout = () => {
+        destroyUserCredentials();
+    };
+
+    loadUserCredentials();
+
+    return {
+        login: login,
+        register: register,
+        logout: logout,
+        isAuthenticated: () => {
+            return isAuthenticated;
+        }
+    };
+})
+
+.factory('AuthInterceptor', ($rootScope, $q, AUTH_EVENTS) => {
+    return {
+        responseError: (response) => {
+            $rootScope.$broadcast({
+                401: AUTH_EVENTS.notAuthenticated,
+            }[response.status], response);
+            return $q.reject(response);
+        }
+    };
+})
+
+.config(($httpProvider) => {
+    $httpProvider.interceptors.push('AuthInterceptor');
 })
 
 ;
