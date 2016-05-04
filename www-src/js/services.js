@@ -158,7 +158,7 @@ angular.module('starter.services', []).factory('BarterItemService', (
 
     var register = (user) => {
         return $q((resolve, reject) => {
-            $http.post(API_ENDPOINT.url + '/signup', user).then(function(result) {
+            $http.post(API_ENDPOINT.url + '/signup', user).then(function (result) {
                 if (result.data.success) {
                     resolve(result.data.msg);
                 } else {
@@ -170,7 +170,7 @@ angular.module('starter.services', []).factory('BarterItemService', (
 
     var login = (user) => {
         return $q((resolve, reject) => {
-            $http.post(API_ENDPOINT.url + '/authenticate', user).then(function(result) {
+            $http.post(API_ENDPOINT.url + '/authenticate', user).then(function (result) {
                 if (result.data.success) {
                     storeUserCredentials(result.data.token);
                     resolve(result.data.msg);
@@ -197,19 +197,19 @@ angular.module('starter.services', []).factory('BarterItemService', (
     };
 })
 
-.factory('AuthInterceptor', ($rootScope, $q, AUTH_EVENTS) => {
-    return {
-        responseError: (response) => {
-            $rootScope.$broadcast({
-                401: AUTH_EVENTS.notAuthenticated,
-            }[response.status], response);
-            return $q.reject(response);
-        }
-    };
-})
 
-.config(($httpProvider) => {
-    $httpProvider.interceptors.push('AuthInterceptor');
-})
+.factory('AuthInterceptor', ($rootScope, $q, AUTH_EVENTS) => {
+        return {
+            responseError: (response) => {
+                $rootScope.$broadcast({
+                    401: AUTH_EVENTS.notAuthenticated,
+                }[response.status], response);
+                return $q.reject(response);
+            }
+        };
+    })
+    .config(($httpProvider) => {
+        $httpProvider.interceptors.push('AuthInterceptor');
+    })
 
 ;
